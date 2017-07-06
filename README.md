@@ -5,9 +5,8 @@ Yet Another simple stash storage for Vue
 ## Usage
 
 ### Setup
-```
+```js
 import Vue from 'vue'
-import App from './App'
 import stashStore from './stash'
 
 Vue.use(yaStash)
@@ -22,7 +21,7 @@ new Vue({
 ```
 
 ### Component
-```
+```js
 Vue.component('user-card', {
     stash: ['user', 'ui'],
     created () {
@@ -36,7 +35,7 @@ Vue.component('user-card', {
 });
 ```
 
-```
+```js
 Vue.component('user-card', {
     stash: {
       name: 'user.name',
