@@ -2,6 +2,17 @@
 Yet Another simple stash storage for Vue
 
 
+
+## Design Goals
+
+1. Not too complicated
+2. Not too simple
+3. Try to keep the standard pattern (`props`-`emit`)
+
+#3 is being specially concerned.
+As you see from example, one can effortlessly switch between `props-emit` and `stash` model.
+Furthermore ways of universal components for two models will be supported. I wish :)   
+
 ## Usage
 
 ### Setup
