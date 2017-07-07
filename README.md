@@ -1,8 +1,6 @@
 # vue-ya-stash
 Yet Another simple stash storage for Vue
 
-
-
 ## Design Goals
 
 1. Not too complicated
