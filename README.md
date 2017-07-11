@@ -16,10 +16,7 @@ Furthermore ways of universal components for two models will be supported. I wis
 ### Setup
 ```js
 import Vue from 'vue'
-import YaStash from './vue-ya-stash.js' // Not yet with npm
 import stashStore from './stash'
-
-Vue.use(YaStash)
 
 new Vue({
   el: '#app',
@@ -33,6 +30,10 @@ new Vue({
 `./stash/index.js`
 ```js
 import Vue from 'vue'
+import YaStash from './vue-ya-stash.js' // Not yet with npm
+
+Vue.use(YaStash)
+
 var stash = {
   user: {
     name: 'Ted',
