@@ -1,13 +1,16 @@
 function stashReducer (obj, keys) {
-  return keys.reduce((pv, cv) => pv[cv], obj)
+  let lastValue = ''
+  return keys.reduce((pv, cv) => {
+    if (!pv) throw Error(`${cv}'s mother is undfined among ${keys}. Possibly "${lastValue}" is typo?`)
+    lastValue = cv
+    return pv[cv]
+  }, obj)
 }
 
 const stashMixin = {
   beforeCreate () {
     // == If current instance is a  root instance
     if (this === this.$root) {
-      console.log('this is root')
-      console.log(this)
       if (!this.$options.data) this.$options.data = {}
       this.$options.data['$stash/store'] = this.$options.stashStore
     }
@@ -15,12 +18,6 @@ const stashMixin = {
     let stash = this.$root.$options.data['$stash/store']
     // let stash = this.$root.$stash
     let options = this.$options.stash
-
-    if (options) {
-      console.log(options)
-      console.log(stash)
-      console.log(this.$root)
-    }
 
     if (stash === undefined) return
 
@@ -68,6 +65,9 @@ const stashMixin = {
         // === Build path and reduce to stash store
         let path = pathStr.split(/[.[\]]+/)
         let reduced = stashReducer(stash, path.slice(0, -1))
+        if (!reduced) {
+          throw Error(`Possibly "${path[path.length - 2]}" is typo.`)
+        }
         let last = path[path.length - 1]
 
         // === computed
