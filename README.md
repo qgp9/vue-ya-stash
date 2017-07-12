@@ -113,9 +113,7 @@ this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
 ```
 Path strings should be same as what one do with real javascript syntex.
 
-You can not do
-```js
-this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
+You can't do
 ```js
 this.$emit('patch:menu', 1, 'new value')
 ```
@@ -124,6 +122,6 @@ But you should do
 this.$eimt(`patch:menu', '[1]', 'new value')
 ```
 
-path string is strictly parsed and will throw errors.
+Path string is strictly parsed and will throw errors in advance.
 
 
