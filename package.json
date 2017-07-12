@@ -17,6 +17,7 @@
     "store",
     "stash"
   ],
+  "files": ["dist/*"],
   "scripts": {
     "dev:dist": "rollup -wm -c build/dev.config.js",
     "build": "node build/build.js",

@@ -73,6 +73,7 @@ const stashMixin = {
         // === computed
         this.$options.computed[key] = () => stash[key]
         // === update handler
+        console.log(key)
         this.$on(
           `update:${key}`,
           value => this.$set(stash, key, value)
@@ -81,9 +82,11 @@ const stashMixin = {
         this.$on(
           `patch:${key}`,
           (path, value) => {
+            console.log(path)
             let paths = pathParser(path)
             let last = paths.pop()
             let obj = referenceReducer(stash[key], paths)
+            console.log(paths)
             this.$set(obj, last, value)
           }
         )
@@ -107,9 +110,11 @@ const stashMixin = {
         this.$on(
           `patch:${key}`,
           (_path, _value) => {
+            console.log(path)
             const _paths = pathParser(_path)
-            const _fullPath = [...paths, _paths.slice(0, -1)]
+            const _fullPath = [...paths, ..._paths.slice(0, -1)]
             const _last = _path[_path.length - 1]
+            console.log(_fullPath)
             const _obj = referenceReducer(stash, _fullPath)
             this.$set(_obj, _last, _value)
           }
