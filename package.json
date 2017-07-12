@@ -1,7 +1,7 @@
 {
   "name": "vue-ya-stash",
   "description": "Yet Another simple stash storage for Vue",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "repository": "qgp9/vue-ya-stash",
   "author": {
     "name": "qgp9",
@@ -17,7 +17,9 @@
     "store",
     "stash"
   ],
-  "files": ["dist/*"],
+  "files": [
+    "dist/*"
+  ],
   "scripts": {
     "dev:dist": "rollup -wm -c build/dev.config.js",
     "build": "node build/build.js",
