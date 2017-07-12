@@ -65,7 +65,7 @@ Vue.component('user-card', {
       // Update
       this.$emit('update:user', {...this.user, name: 'Bob'})
       // Patch
-      this.$emit('patch:user', this.user, 'name', 'Bob')
+      this.$emit('patch:user', 'name', 'Bob')
     }
 });
 ```
@@ -84,6 +84,46 @@ Vue.component('user-card', {
       this.$emit('update:name', 'Bob')
       this.$emit('update:sidebar', {...this.sidebar, visible: true})
       // Patch
-      this.$emit('patch:sidebar', this.sidebar, 'visible', true)
+      this.$emit('patch:sidebar', 'visible', true)
     }
 });
+```
+
+### Patch
+To update parts of stash, one can use `patch` instead of `update`
+```js
+this.$emit('patch:key', path_string, update_value)
+```
+
+For example after you mounted `stash.ui` from above, you can change `stash.ui.sidebar.visible` with `patch`
+```js
+Vue.component('nav-bar', {
+  stash: ['ui']
+  methods: {
+    toggleSidebar () {
+      this.$emit('patch:ui', 'sidebar.visible', !ui.sidebar.visible)
+    }
+  }
+}
+```
+
+A path string can cover dot(`.`) references and also square brackets('[]').
+```js
+this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
+```
+Path strings should be same as what one do with real javascript syntex.
+
+You can not do
+```js
+this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
+```js
+this.$emit('patch:menu', 1, 'new value')
+```
+But you should do
+```js
+this.$eimt(`patch:menu', '[1]', 'new value')
+```
+
+path string is strictly parsed and will throw errors.
+
+
