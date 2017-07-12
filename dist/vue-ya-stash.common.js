@@ -1,1 +1,156 @@
-module.exports=function(modules){function __webpack_require__(moduleId){if(installedModules[moduleId])return installedModules[moduleId].exports;var module=installedModules[moduleId]={i:moduleId,l:!1,exports:{}};return modules[moduleId].call(module.exports,module,module.exports,__webpack_require__),module.l=!0,module.exports}var installedModules={};return __webpack_require__.m=modules,__webpack_require__.c=installedModules,__webpack_require__.i=function(value){return value},__webpack_require__.d=function(exports,name,getter){__webpack_require__.o(exports,name)||Object.defineProperty(exports,name,{configurable:!1,enumerable:!0,get:getter})},__webpack_require__.n=function(module){var getter=module&&module.__esModule?function(){return module.default}:function(){return module};return __webpack_require__.d(getter,"a",getter),getter},__webpack_require__.o=function(object,property){return Object.prototype.hasOwnProperty.call(object,property)},__webpack_require__.p="",__webpack_require__(__webpack_require__.s=0)}([function(module,__webpack_exports__,__webpack_require__){"use strict";function _toConsumableArray(arr){if(Array.isArray(arr)){for(var i=0,arr2=Array(arr.length);i<arr.length;i++)arr2[i]=arr[i];return arr2}return Array.from(arr)}function pathParser(path){console.log(path);for(var paths=[],remain=(path.startsWith("[")?"":".")+path;remain;){var wip=void 0;if((wip=pathExprProperty.exec(remain))||((wip=pathExprRefNumber.exec(remain))?wip[1]=parseInt(wip[1]):(wip=pathExprRefString.exec(remain))&&(wip[1]=wip[1].replace(pathExprStripRef,""),wip[1]=wip[1].replace(pathExprStripQuote,""))),!wip||0!==wip[1]&&!wip[1])throw Error("Bad path '"+remain+"' in '"+path+"'");paths.push(wip[1]),remain=wip[2]}return console.log(paths),paths}function referenceReducer(obj,keys,i,a){return keys.reduce(function(pv,cv){if(!pv)throw Error(cv+"'s mother is undfined among "+keys+'. Possibly "'+a[i-1]+'" is typo?');return pv[cv]},obj)}function plugin(Vue){plugin.installed||Vue.mixin(stashMixin)}Object.defineProperty(__webpack_exports__,"__esModule",{value:!0});var _typeof="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(obj){return typeof obj}:function(obj){return obj&&"function"==typeof Symbol&&obj.constructor===Symbol&&obj!==Symbol.prototype?"symbol":typeof obj},pathExprProperty=/^\.([_a-zA-Z$][\w$]*)(.*)$/,pathExprRefNumber=/^\[(\d+)\](.*)/,pathExprRefString=/^(\['.*?'\]|\[".*?"\])(.*)$/,pathExprStripRef=/(^\[)|(\]$)/g,pathExprStripQuote=/(^['"]|['"]$)/g,stashMixin={beforeCreate:function(){var _this=this;this===this.$root&&(this.$options.data||(this.$options.data={}),this.$options.data["$stash/store"]=this.$options.stashStore);var stash=this.$root.$options.data["$stash/store"];if(void 0!==stash){var stashOptions=this.$options.stash;if(void 0!==stashOptions)if(void 0===this.$options.computed&&(this.$options.computed={}),Array.isArray(stashOptions))stashOptions.forEach(function(key){_this.$options.computed[key]=function(){return stash[key]},_this.$on("update:"+key,function(value){return _this.$set(stash,key,value)}),_this.$on("patch:"+key,function(path,value){var paths=pathParser(path),last=paths.pop(),obj=referenceReducer(stash[key],paths);_this.$set(obj,last,value)})});else if("object"===(void 0===stashOptions?"undefined":_typeof(stashOptions))){for(var key in stashOptions)!function(){var option=stashOptions[key],path="object"===(void 0===option?"undefined":_typeof(option))?option.stash||key:option||key,paths=pathParser(path);_this.$options.computed[key]=function(){return referenceReducer(stash,paths)};var parentPaths=paths.slice(0,-1),last=paths[paths.length-1];_this.$on("update:"+key,function(value){return _this.$set(referenceReducer(stash,parentPaths),last,value)}),_this.$on("patch:"+key,function(_path,_value){var _paths=pathParser(_path),_fullPath=[].concat(_toConsumableArray(paths),[_paths.slice(0,-1)]),_last=_path[_path.length-1],_obj=referenceReducer(stash,_fullPath);_this.$set(_obj,_last,_value)})}()}}}};"undefined"!=typeof window&&window.Vue&&window.Vue.use(plugin),__webpack_exports__.default=plugin}]);
+/**
+  * vue-ya-stash v0.0.1
+  * (c) 2017 Evan You
+  * @license MIT
+  */
+'use strict';
+
+//
+// PATH PARSER
+//
+var pathExprProperty = /^\.([_a-zA-Z$][\w$]*)(.*)$/;
+var pathExprRefNumber = /^\[(\d+)\](.*)/;
+var pathExprRefString = /^(\['.*?'\]|\[".*?"\])(.*)$/;
+var pathExprStripRef = /(^\[)|(\]$)/g;
+var pathExprStripQuote = /(^['"]|['"]$)/g;
+function pathParser (path) {
+  var paths = [];
+  var remain = (path.startsWith('[') ? '' : '.') + path;
+  while (remain) { // Assume '' is false also
+    var wip = (void 0);
+    if ((wip = pathExprProperty.exec(remain))) {
+    } else if ((wip = pathExprRefNumber.exec(remain))) {
+      wip[1] = parseInt(wip[1]);
+    } else if ((wip = pathExprRefString.exec(remain))) {
+      wip[1] = wip[1].replace(pathExprStripRef, '');
+      wip[1] = wip[1].replace(pathExprStripQuote, '');
+    }
+    if (wip && (wip[1] === 0 || wip[1])) {
+      paths.push(wip[1]);
+      remain = wip[2];
+    } else {
+      throw Error(("Bad path '" + remain + "' in '" + path + "'"))
+    }
+  }
+  return paths
+}
+
+//
+// refferenceReducer
+//
+function referenceReducer (obj, keys, i, a) {
+  return keys.reduce(function (pv, cv) {
+    if (!pv) { throw Error((cv + "'s mother is undfined among " + keys + ". Possibly \"" + (a[i - 1]) + "\" is typo?")) }
+    return pv[cv]
+  }, obj)
+}
+
+//
+// Mixin
+//
+// $stash/store
+//
+var stashMixin = {
+  beforeCreate: function beforeCreate () {
+    var this$1 = this;
+
+    // == Only for ROOT
+    if (this === this.$root) {
+      if (!this.$options.data) { this.$options.data = {}; }
+      this.$options.data['$stash/store'] = this.$options.stashStore;
+    }
+
+    // == From here, for all component instances
+
+    // If no stash in root
+    var stash = this.$root.$options.data['$stash/store'];
+    if (stash === undefined) { return }
+
+    // If no stash options
+    var stashOptions = this.$options.stash;
+    if (stashOptions === undefined) { return }
+
+    // == If there is no computed property, make object
+    if (typeof this.$options.computed === 'undefined') {
+      this.$options.computed = {};
+    }
+
+    // == If stash option is array, just use property:'property'
+    if (Array.isArray(stashOptions)) {
+      stashOptions.forEach(function (key) {
+        // TODO if (stash[property]===undefined)
+        // === computed
+        this$1.$options.computed[key] = function () { return stash[key]; };
+        // === update handler
+        this$1.$on(
+          ("update:" + key),
+          function (value) { return this$1.$set(stash, key, value); }
+        );
+        // === patch handler
+        this$1.$on(
+          ("patch:" + key),
+          function (path, value) {
+            var paths = pathParser(path);
+            var last = paths.pop();
+            var obj = referenceReducer(stash[key], paths);
+            this$1.$set(obj, last, value);
+          }
+        );
+      });
+      // == If stash option is object
+    } else if (typeof stashOptions === 'object') {
+      var loop = function ( key ) {
+        var option = stashOptions[key];
+        var path = typeof option === 'object' ? (option.stash || key) : (option || key);
+        var paths = pathParser(path);
+        // === computed
+        this$1.$options.computed[key] = function () { return referenceReducer(stash, paths); };
+        // === 'update' handler
+        var parentPaths = paths.slice(0, -1);
+        var last = paths[paths.length - 1];
+        this$1.$on(
+          ("update:" + key),
+          function (value) { return this$1.$set(referenceReducer(stash, parentPaths), last, value); }
+        );
+        // === 'patch' handler
+        this$1.$on(
+          ("patch:" + key),
+          function (_path, _value) {
+            var _paths = pathParser(_path);
+            var _fullPath = paths.concat( [_paths.slice(0, -1)]);
+            var _last = _path[_path.length - 1];
+            var _obj = referenceReducer(stash, _fullPath);
+            this$1.$set(_obj, _last, _value);
+          }
+        );
+      };
+
+      for (var key in stashOptions) loop( key );
+    }
+  }
+};
+
+function plugin (Vue) {
+}
+plugin.install = function (Vue) {
+  if (this.installed) {
+    return
+  }
+  Vue.mixin(stashMixin);
+};
+
+
+if (typeof window !== 'undefined' && window.Vue) {
+  window.Vue.use(plugin);
+}
+
+/**
+ * Babel Starter Kit (https://www.kriasoft.com/babel-starter-kit)
+ *
+ * Copyright © 2015-2016 Kriasoft, LLC. All rights reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE.txt file in the root directory of this source tree.
+ */
+
+module.exports = plugin;

@@ -3,12 +3,6 @@
   * (c) 2017 Evan You
   * @license MIT
   */
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.VueYaStash = factory());
-}(this, (function () { 'use strict';
-
 //
 // PATH PARSER
 //
@@ -157,6 +151,4 @@ if (typeof window !== 'undefined' && window.Vue) {
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-return plugin;
-
-})));
+export default plugin;

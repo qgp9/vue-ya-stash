@@ -1,2 +1,12 @@
-node_modules/
+.DS_Store
+node_modules
+TODOs.md
+test/e2e/reports
+test/e2e/screenshots
+selenium-debug.log
+dist/*.gz
+dist/*.map
+explorations
+docs/_book
+dev/
 *~

@@ -7,7 +7,6 @@ let pathExprRefString = /^(\['.*?'\]|\[".*?"\])(.*)$/
 let pathExprStripRef = /(^\[)|(\]$)/g
 let pathExprStripQuote = /(^['"]|['"]$)/g
 function pathParser (path) {
-  console.log(path)
   let paths = []
   let remain = (path.startsWith('[') ? '' : '.') + path
   while (remain) { // Assume '' is false also
@@ -26,7 +25,6 @@ function pathParser (path) {
       throw Error(`Bad path '${remain}' in '${path}'`)
     }
   }
-  console.log(paths)
   return paths
 }
 
@@ -122,17 +120,14 @@ const stashMixin = {
 }
 
 function plugin (Vue) {
-  if (plugin.installed) {
+}
+plugin.install = function (Vue) {
+  if (this.installed) {
     return
   }
-  // Register a helper prototype property for store access.
-  // Object.defineProperty(Vue.prototype, '$stash/store', {
-  //   get () {
-  //     return this.$root.stashStore
-  //   }
-  // })
   Vue.mixin(stashMixin)
 }
+
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(plugin)
