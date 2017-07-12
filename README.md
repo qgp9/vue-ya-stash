@@ -132,7 +132,7 @@ A path string can cover dot(`.`) references and also square brackets('[]').
 ```js
 this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
 ```
-Path strings should be same as what one do with real javascript syntex.
+Path strings should be same as what one does with real javascript syntex.
 
 You can't do
 ```js
