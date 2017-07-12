@@ -1,127 +1,140 @@
-# Babel Starter Kit
+# vue-ya-stash
+Yet Another simple stash storage for Vue
 
-[![NPM version](http://img.shields.io/npm/v/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/generator-javascript)
-[![NPM downloads](http://img.shields.io/npm/dm/generator-javascript.svg?style=flat-square)](https://www.npmjs.com/package/generator-javascript)
-[![Build Status](http://img.shields.io/travis/kriasoft/babel-starter-kit/master.svg?style=flat-square)](https://travis-ci.org/kriasoft/babel-starter-kit)
-[![Coverage Status](https://img.shields.io/coveralls/kriasoft/babel-starter-kit.svg?style=flat-square)](https://coveralls.io/github/kriasoft/babel-starter-kit)
-[![Dependency Status](http://img.shields.io/david/dev/kriasoft/babel-starter-kit.svg?style=flat-square)](https://david-dm.org/kriasoft/babel-starter-kit#info=devDependencies)
-[![Online Chat](http://img.shields.io/badge/chat_room-%23babel--starter--kit-blue.svg?style=flat-square)](https://gitter.im/kriasoft/babel-starter-kit)
-
-> Babel Starter Kit is a project template for authoring and publishing JavaScript libraries using
-> [ES2015](https://babeljs.io/docs/learn-es2015/)+ via [Babel](https://babeljs.io/)
-
-
-### Features
-
-&nbsp; &nbsp; ✓ Author your code, including tests, in [ES2015](https://babeljs.io/docs/learn-es2015/)+ via [Babel](http://babeljs.io/)<br>
-&nbsp; &nbsp; ✓ Publish as CommonJS, ES2015 and UMD via [Rollup](http://rollupjs.org/)<br>
-&nbsp; &nbsp; ✓ Pre-configured unit tests with [Mocha](http://mochajs.org/), [Chai](http://chaijs.com/) and [Sinon](http://sinonjs.org/)<br>
-&nbsp; &nbsp; ✓ Pre-configured test coverage with [Istanbul](https://github.com/gotwarlost/istanbul) and [Coveralls](https://coveralls.io/)<br>
-&nbsp; &nbsp; ✓ Generate a homepage for your project with [Easystatic](https://easystatic.com) ([demo](http://www.kriasoft.com/babel-starter-kit/))<br>
-&nbsp; &nbsp; ✓ [Yeoman](http://yeoman.io/) generator ([generator-javascript](https://github.com/kriasoft/babel-starter-kit/tree/yeoman-generator))<br>
-&nbsp; &nbsp; ✓ Cross-platform, minimum dependencies<br>
-&nbsp; &nbsp; ✓ 24/7 community support on [Gitter](https://gitter.im/kriasoft/babel-starter-kit)<br>
+## TL;DR
+```js
+export default {
+  stash: ['user', 'ui'],
+  mounted () {
+    console.log('this.user.name')
+    this.$emit('update:user', {...this.user, name: 'Bob'})
+    this.$emit('patch:ui', 'sidebar.visible', true )
+  }
+}  
+```
+![BOOYAH](http://i.imgur.com/JoeKDOC.png)
 
 
-### Sponsors
+## Design Goals
 
-<a href="https://opencollective.com/babel-starter-kit/sponsor/0/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/sponsor/0/avatar.svg" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/sponsor/1/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/sponsor/1/avatar.svg" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/sponsor/2/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/sponsor/2/avatar.svg" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/sponsor/3/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/sponsor/3/avatar.svg" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/sponsor/4/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/sponsor/4/avatar.svg" height="64">
-</a>
+1. Not too complicated
+2. Not too simple
+3. Try to keep the standard pattern (`props`-`emit`)
+
+#3 is being specially concerned.
+As you see from example, one can effortlessly switch between `props-emit` and `stash` model.
+Furthermore ways of universal components for two models will be supported. I wish :)   
 
 
-### Documentation
+## Usage
+### Setup
+```js
+import Vue from 'vue'
+import stashStore from './stash'
 
-* [Getting Started](docs/getting-started.md)
-* [Recipes](docs/recipes)
-  * [Testing with <code>mocha</code> and <code>jsdom</code>](docs/recipes/testing-with-mocha-and-jsdom.md)
-  * [Throwing errors with FB's <code>invariant</code> library](docs/recipes/throwing-errors-with-fbjs-invariant.md)
+new Vue({
+  el: '#app',
+  router,
+  stashStore,
+  template: '<App/>',
+  components: { App }
+})
+```
 
-See also [www.kriasoft.com/babel-starter-kit](https://www.kriasoft.com/babel-starter-kit/)
+`./stash/index.js`
+```js
+import Vue from 'vue'
+import YaStash from './vue-ya-stash.js' // Not yet with npm
 
+Vue.use(YaStash)
 
-### Backers
+var stash = {
+  user: {
+    name: 'Ted',
+    email: 'ted@example.com'
+  },
+  ui: {
+    sidebar: {
+      visible: true
+    }
+  }
+}
 
-Love **Babel Starter Kit** work and community? Help us keep it alive by [donating funds](https://opencollective.com/babel-starter-kit#backer)
-to cover project expenses!
+var stashContainer = new Vue({
+  data: {
+    stash: stash
+  }
+})
 
-<a href="https://opencollective.com/babel-starter-kit/backer/0/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/0/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/1/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/1/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/2/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/2/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/3/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/3/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/4/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/4/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/5/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/5/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/6/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/6/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/7/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/7/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/8/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/8/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/9/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/9/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/10/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/10/avatar.svg" width="64" height="64">
-</a>
-<a href="https://opencollective.com/babel-starter-kit/backer/11/website" target="_blank">
-  <img src="https://opencollective.com/babel-starter-kit/backer/11/avatar.svg" width="64" height="64">
-</a>
+export default stashContainer.stash
+```
 
+### Component
+```js
+Vue.component('user-card', {
+    stash: ['user', 'ui'],
+    created () {
+      // Access
+      console.log(this.user.name)
+      // Update
+      this.$emit('update:user', {...this.user, name: 'Bob'})
+      // Patch
+      this.$emit('patch:user', 'name', 'Bob')
+    }
+});
+```
 
-### Learn ES6
+```js
+Vue.component('user-card', {
+    stash: {
+      name: 'user.name',
+      sidebar: 'ui.sidebar'
+    }
+    created () {
+      // Access
+      console.log(this.name)
+      console.log(this.sidebar.visible)
+      // Update
+      this.$emit('update:name', 'Bob')
+      this.$emit('update:sidebar', {...this.sidebar, visible: true})
+      // Patch
+      this.$emit('patch:sidebar', 'visible', true)
+    }
+});
+```
 
-:mortar_board: &nbsp; **[ES6 Training Course](https://es6.io/friend/konstantin)** by Wes Bos<br>
-:green_book: &nbsp; **[You Don't Know JS: ES6 & Beyond](http://amzn.to/2bzvV51)** by Kyle Simpson (Dec, 2015)<br>
+### Patch
+To update parts of stash, one can use `patch` instead of `update`
+```js
+this.$emit('patch:key', path_string, update_value)
+```
 
+For example after you mounted `stash.ui` from above, you can change `stash.ui.sidebar.visible` with `patch`
+```js
+Vue.component('nav-bar', {
+  stash: ['ui']
+  methods: {
+    toggleSidebar () {
+      this.$emit('patch:ui', 'sidebar.visible', !ui.sidebar.visible)
+    }
+  }
+}
+```
 
-### Related Projects
+A path string can cover dot(`.`) references and also square brackets('[]').
+```js
+this.$emit('patch:ui', 'sidebar.menu[4].content', 'new value')
+```
+Path strings should be same as what one do with real javascript syntex.
 
-* [React Starter Kit](https://github.com/kriasoft/react-starter-kit) — Isomorphic web app boilerplate (Node.js/Express, React.js, GraphQL)
-* [React Static Boilerplate](https://github.com/koistya/react-static-boilerplate) — Generate static websites from React components with Webpack
-* [Universal Router](https://github.com/kriasoft/universal-router) — Isomorphic router for web and single-page applications (SPA)
-* [Membership Database](https://github.com/membership/membership.db) — SQL database boilerplate for web app users, roles and auth tokens
+You can't do
+```js
+this.$emit('patch:menu', 1, 'new value')
+```
+But you should do
+```js
+this.$eimt(`patch:menu', '[1]', 'new value')
+```
 
+Path string is strictly parsed and will throw errors in advance.
 
-### Get in Touch
-
-* [#babel-starter-kit](https://gitter.im/kriasoft/babel-starter-kit) on Gitter
-* [@koistya](https://twitter.com/koistya) on [Codementor](https://www.codementor.io/koistya)
-
-
-### License
-
-Copyright © 2015-2016 Kriasoft, LLC. This source code is licensed under the MIT license found in
-the [LICENSE.txt](https://github.com/kriasoft/react-starter-kit/blob/master/LICENSE.txt) file.
-The documentation to the project is licensed under the [CC BY-SA 4.0](http://creativecommons.org/licenses/by-sa/4.0/)
-license.
-
-
----
-Made with ♥ by Konstantin Tarkus ([@koistya](https://twitter.com/koistya)) and [contributors](https://github.com/kriasoft/babel-starter-kit/graphs/contributors)
