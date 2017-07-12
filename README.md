@@ -1,6 +1,20 @@
 # vue-ya-stash
 Yet Another simple stash storage for Vue
 
+## TL;DR
+```js
+export default {
+  stash: ['user', 'ui'],
+  mounted () {
+    console.log('this.user.name')
+    this.$emit('update:name', 'Bob')
+    this.$emit('patch:ui', 'sidebar.visible', true )
+  }
+}  
+```
+![BOOYAH](http://i.imgur.com/JoeKDOC.png)
+
+
 ## Design Goals
 
 1. Not too complicated
@@ -11,8 +25,8 @@ Yet Another simple stash storage for Vue
 As you see from example, one can effortlessly switch between `props-emit` and `stash` model.
 Furthermore ways of universal components for two models will be supported. I wish :)   
 
-## Usage
 
+## Usage
 ### Setup
 ```js
 import Vue from 'vue'
