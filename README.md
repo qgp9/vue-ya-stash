@@ -2,6 +2,9 @@
 Yet Another simple stash storage for Vue
 
 ## TL;DR
+```bash
+npm install vue-ya-stash
+```
 ```js
 export default {
   stash: ['user', 'ui'],
@@ -27,6 +30,10 @@ Furthermore ways of universal components for two models will be supported. I wis
 
 
 ## Usage
+### Install
+```sh
+npm install --save vue-ya-stash
+```
 ### Setup
 ```js
 import Vue from 'vue'
@@ -44,9 +51,9 @@ new Vue({
 `./stash/index.js`
 ```js
 import Vue from 'vue'
-import YaStash from './vue-ya-stash.js' // Not yet with npm
+import VueYaStash from 'vue-ya-stash'
 
-Vue.use(YaStash)
+Vue.use(VueYaStash)
 
 var stash = {
   user: {
