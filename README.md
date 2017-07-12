@@ -7,7 +7,7 @@ export default {
   stash: ['user', 'ui'],
   mounted () {
     console.log('this.user.name')
-    this.$emit('update:name', 'Bob')
+    this.$emit('update:user', {...this.user, name: 'Bob'})
     this.$emit('patch:ui', 'sidebar.visible', true )
   }
 }  
