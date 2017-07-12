@@ -109,7 +109,7 @@ const stashMixin = {
           (_path, _value) => {
             const _paths = pathParser(_path)
             const _fullPath = [...paths, ..._paths.slice(0, -1)]
-            const _last = _path[_path.length - 1]
+            const _last = _paths[_paths.length - 1]
             const _obj = referenceReducer(stash, _fullPath)
             this.$set(_obj, _last, _value)
           }
