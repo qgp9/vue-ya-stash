@@ -1,5 +1,5 @@
 /**
-  * vue-ya-stash v0.0.1
+  * vue-ya-stash v0.0.2
   * (c) 2017 Evan You
   * @license MIT
   */
