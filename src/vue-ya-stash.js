@@ -1,13 +1,28 @@
 //
 // PATH PARSER
 //
-let pathExprProperty = /^\.([_a-zA-Z$][\w$]*)(.*)$/
-let pathExprRefNumber = /^\[(\d+)\](.*)/
-let pathExprRefString = /^(\['.*?'\]|\[".*?"\])(.*)$/
-let pathExprStripRef = /(^\[)|(\]$)/g
-let pathExprStripQuote = /(^['"]|['"]$)/g
+const pathExprProperty = /^\.([_a-zA-Z$][\w$]*)(.*)$/
+const pathExprRefNumber = /^\[(\d+)\](.*)/
+const pathExprRefString = /^(\['.*?'\]|\[".*?"\])(.*)$/
+const pathExprStripRef = /(^\[)|(\]$)/g
+const pathExprStripQuote = /(^['"]|['"]$)/g
 function pathParser (path) {
-  let paths = []
+  // TODO check integer?
+  if ((!path) && (path !== 0)) {
+    throw Error(`path is empty : ${path}`)
+  }
+  if (Array.isArray(path)) {
+    return path.reduce((p, c) => p.concat(pathParser(c)), [])
+  }
+  if (typeof path === 'object') {
+    return Object.values(path).slice(0, 1) // TODO TEST this!
+  }
+  if (typeof path !== 'string' && typeof path !== 'number') {
+    throw Error(`path should be a number/string/array/object. : ${path}`)
+  }
+  if (typeof path === 'number') return [path]
+  if (/^\d+$/.test(path)) return [parseInt(path)]
+  const paths = []
   let remain = (path.startsWith('[') ? '' : '.') + path
   while (remain) { // Assume '' is false also
     let wip
@@ -54,11 +69,11 @@ const stashMixin = {
     // == From here, for all component instances
 
     // If no stash in root
-    let stash = this.$root.$options.data['$stash/store']
+    const stash = this.$root.$options.data['$stash/store']
     if (stash === undefined) return
 
     // If no stash options
-    let stashOptions = this.$options.stash
+    const stashOptions = this.$options.stash
     if (stashOptions === undefined) return
 
     // == If there is no computed property, make object
@@ -81,9 +96,9 @@ const stashMixin = {
         this.$on(
           `patch:${key}`,
           (path, value) => {
-            let paths = pathParser(path)
-            let last = paths.pop()
-            let obj = referenceReducer(stash[key], paths)
+            const paths = pathParser(path)
+            const last = paths.pop()
+            const obj = referenceReducer(stash[key], paths)
             this.$set(obj, last, value)
           }
         )
@@ -131,7 +146,6 @@ plugin.install = function (Vue) {
   }
   Vue.mixin(stashMixin)
 }
-
 
 if (typeof window !== 'undefined' && window.Vue) {
   window.Vue.use(plugin)
