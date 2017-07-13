@@ -65,6 +65,7 @@ function genConfig (opts) {
     entry: resolve('src/index.js'),
     dest: opts.dest,
     format: opts.format,
+    external: ['vue'],
     banner,
     moduleName: 'VueYaStash',
     plugins: [
