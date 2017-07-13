@@ -92,28 +92,32 @@ const stashMixin = {
     } else if (typeof stashOptions === 'object') {
       for (var key in stashOptions) {
         const option = stashOptions[key]
-        const path = typeof option === 'object' ? (option.stash || key) : (option || key)
-        const paths = pathParser(path)
-        // === computed
-        this.$options.computed[key] = () => referenceReducer(stash, paths)
-        // === 'update' handler
-        const parentPaths = paths.slice(0, -1)
-        const last = paths[paths.length - 1]
-        this.$on(
-          `update:${key}`,
-          value => this.$set(referenceReducer(stash, parentPaths), last, value)
-        )
-        // === 'patch' handler
-        this.$on(
-          `patch:${key}`,
-          (_path, _value) => {
-            const _paths = pathParser(_path)
-            const _fullPath = [...paths, ..._paths.slice(0, -1)]
-            const _last = _paths[_paths.length - 1]
-            const _obj = referenceReducer(stash, _fullPath)
-            this.$set(_obj, _last, _value)
-          }
-        )
+        if (typeof option === 'function') {
+          this.$options.computed[key] = () => option(stash)
+        } else {
+          const path = typeof option === 'object' ? (option.stash || key) : (option || key)
+          const paths = pathParser(path)
+          // === computed
+          this.$options.computed[key] = () => referenceReducer(stash, paths)
+          // === 'update' handler
+          const parentPaths = paths.slice(0, -1)
+          const last = paths[paths.length - 1]
+          this.$on(
+            `update:${key}`,
+            value => this.$set(referenceReducer(stash, parentPaths), last, value)
+          )
+          // === 'patch' handler
+          this.$on(
+            `patch:${key}`,
+            (_path, _value) => {
+              const _paths = pathParser(_path)
+              const _fullPath = [...paths, ..._paths.slice(0, -1)]
+              const _last = _paths[_paths.length - 1]
+              const _obj = referenceReducer(stash, _fullPath)
+              this.$set(_obj, _last, _value)
+            }
+          )
+        }
       }
     }
   }
