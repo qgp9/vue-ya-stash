@@ -143,5 +143,14 @@ But you should do
 this.$eimt(`patch:menu', '[1]', 'new value')
 ```
 
-Path string is strictly parsed and will throw errors in advance.
+The path parser will throw errors in advance.
 
+### computed stash
+
+Stash properties can be a computed function which is **Read Only**. 
+With function forms, `update:foo` or `patch:foo` won't be generated in automatic manner, however I wish we will see `set` option soon.
+```js
+stash: {
+  name: stash => stash.user.name.toUpperCase()
+}
+```
