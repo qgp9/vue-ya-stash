@@ -1,4 +1,4 @@
-# vue-ya-stash
+# vue-ya-stash [![CircleCI](https://circleci.com/gh/qgp9/vue-ya-stash.svg?style=shield)](https://circleci.com/gh/qgp9/vue-ya-stash) ![](https://img.shields.io/badge/VUE-YA-brightgreen.svg)
 Yet Another simple stash storage for Vue
 
 ## TL;DR
