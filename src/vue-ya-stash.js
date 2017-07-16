@@ -1,3 +1,5 @@
+import Vue from 'vue'
+import debug from './debug'
 //
 // PATH PARSER
 //
@@ -54,22 +56,62 @@ function referenceReducer (obj, keys, i, a) {
 }
 
 //
+// Setter
+//
+function stashSet (_stash, _path, _value) {
+  if (!Array.isArray(_path)) _path = [_path]
+  const _paths = pathParser(_path)
+  const _parentPaths = _paths.slice(0, -1)
+  const _last = _paths[_paths.length - 1]
+  Vue.set(referenceReducer(_stash, _parentPaths), _last, _value)
+}
+//
 // Mixin
 //
 // $stash/store
 //
+const linkerNames = ['stashStore']
+const mountPoint = '$plugins/vue-ya-stash'
+const dataPoint = '$stash/store'
 const stashMixin = {
   beforeCreate () {
     // == Only for ROOT
     if (this === this.$root) {
-      if (!this.$options.data) this.$options.data = {}
-      this.$options.data['$stash/store'] = this.$options.stashStore
+      let stash
+      for (const i in linkerNames) {
+        if (linkerNames[i] in this.$options) {
+          stash = this.$options[linkerNames[i]]
+          break
+        }
+      }
+      // return without error if root doesn't have stash option at all
+      // or warning? => No because may other vuex or router use vue instance
+      if (stash === undefined) {
+        return
+      }
+      // Check the assurance
+      const cname = stash.constructor.name
+      // if it's store container instance
+      if (cname === 'Vue$3') {
+        this[mountPoint] = { container: stash, vm: stash }
+        stash = stash.stash
+      }
+      if (
+        typeof stash === 'object' &&
+        stash.__ob__ &&
+        stash.__ob__.constructor.name === 'Observer'
+      ) {
+        if (!this.$options.data) this.$options.data = {}
+        this.$options.data[dataPoint] = stash
+      } else {
+        throw Error('Stash object should be Vue instance or obsereved object')
+      }
     }
 
     // == From here, for all component instances
 
     // If no stash in root
-    const stash = this.$root.$options.data['$stash/store']
+    const stash = this.$root.$options.data[dataPoint]
     if (stash === undefined) return
 
     // If no stash options
@@ -80,7 +122,6 @@ const stashMixin = {
     if (typeof this.$options.computed === 'undefined') {
       this.$options.computed = {}
     }
-
     // == If stash option is array, just use property:'property'
     if (Array.isArray(stashOptions)) {
       stashOptions.forEach(key => {
@@ -115,11 +156,9 @@ const stashMixin = {
           // === computed
           this.$options.computed[key] = () => referenceReducer(stash, paths)
           // === 'update' handler
-          const parentPaths = paths.slice(0, -1)
-          const last = paths[paths.length - 1]
           this.$on(
             `update:${key}`,
-            value => this.$set(referenceReducer(stash, parentPaths), last, value)
+            value => stashSet(stash, path, value)
           )
           // === 'patch' handler
           this.$on(
