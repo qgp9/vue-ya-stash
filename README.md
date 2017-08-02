@@ -1,4 +1,10 @@
-# vue-ya-stash [![CircleCI](https://circleci.com/gh/qgp9/vue-ya-stash.svg?style=shield)](https://circleci.com/gh/qgp9/vue-ya-stash) ![](https://img.shields.io/badge/VUE-YA-brightgreen.svg)
+# vue-ya-stash 
+
+[![CircleCI](https://circleci.com/gh/qgp9/vue-ya-stash.svg?style=shield)](https://circleci.com/gh/qgp9/vue-ya-stash) 
+![VUEYA](https://img.shields.io/badge/VUE-YA-brightgreen.svg)
+[![Gitter chat](https://badges.gitter.im/qgp9/vue-ya-stash.png)](https://gitter.im/qgp9/vue-ya-stash)
+[![npm version](https://badge.fury.io/js/vue-ya-stash.svg)](https://badge.fury.io/js/vue-ya-stash)
+
 Yet Another simple stash storage for Vue
 
 ## TL;DR
